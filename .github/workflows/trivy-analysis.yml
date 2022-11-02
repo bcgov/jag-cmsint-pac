@@ -35,7 +35,7 @@ jobs:
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1
-          CONTEXT: ./image cmsint-pac-poller
+          CONTEXT: ./cmsint-pac-poller
         run: |
           docker build -t cmsint-pac-poller:${{ github.sha }} ${CONTEXT}
 
