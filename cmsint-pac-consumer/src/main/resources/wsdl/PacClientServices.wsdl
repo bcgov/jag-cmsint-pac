@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="ClientServiceService"
+                  targetNamespace="http://ws.phis.health.com" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+                  xmlns:tns="http://ws.phis.health.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+                   targetNamespace="http://ws.phis.health.com" xmlns:tns="http://ws.phis.health.com"
+                   xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="debug" type="tns:debug"/>
+            <xs:element name="debugResponse" type="tns:debugResponse"/>
+            <xs:element name="synchronizeClient" type="tns:synchronizeClient"/>
+            <xs:element name="synchronizeClientResponse" type="tns:synchronizeClientResponse"/>
+            <xs:complexType name="synchronizeClient">
+                <xs:sequence>
+                    <xs:element name="csNumber" type="xs:string"/>
+                    <xs:element minOccurs="0" name="surname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="givenName1" type="xs:string"/>
+                    <xs:element minOccurs="0" name="givenName2" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="birthDate" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="gender" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="photoGuid" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="probableDischargeDate" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="outLocation" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="outReason" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="centre" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="livingUnit" nillable="true" type="xs:string"/>
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:complexType name="synchronizeClientResponse">
+
+                <xs:sequence/>
+
+            </xs:complexType>
+
+            <xs:complexType name="debug">
+
+                <xs:sequence>
+
+                    <xs:element minOccurs="0" name="csNumber" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="surname" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="givenName1" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="givenName2" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="birthDate" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="gender" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="photoGuid" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="probableDischargeDate" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="outLocation" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="outReason" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="centre" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="livingUnit" type="xs:string"/>
+
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:complexType name="debugResponse">
+
+                <xs:sequence>
+
+                    <xs:element minOccurs="0" name="return" type="tns:ClientServiceDebug"/>
+
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:complexType name="ClientServiceDebug">
+
+                <xs:sequence>
+
+                    <xs:element minOccurs="0" name="inputValues" type="tns:ClientInfo"/>
+
+                    <xs:element minOccurs="0" name="pacValues" type="tns:ClientInfo"/>
+
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:complexType name="ClientInfo">
+
+                <xs:sequence>
+
+                    <xs:element minOccurs="0" name="birthDate" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="centre" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="csNumber" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="gender" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="givenName1" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="givenName2" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="livingUnit" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="outLocation" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="outReason" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="photoGuid" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="probableDischargeDate" type="xs:string"/>
+
+                    <xs:element minOccurs="0" name="surname" type="xs:string"/>
+
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:element name="Exception" type="tns:Exception"/>
+
+            <xs:complexType name="Exception">
+
+                <xs:sequence>
+
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+
+                </xs:sequence>
+
+            </xs:complexType>
+
+        </xs:schema>
+
+    </wsdl:types>
+
+    <wsdl:message name="Exception">
+
+        <wsdl:part name="Exception" element="tns:Exception">
+        </wsdl:part>
+
+    </wsdl:message>
+
+    <wsdl:message name="debugResponse">
+
+        <wsdl:part name="parameters" element="tns:debugResponse">
+        </wsdl:part>
+
+    </wsdl:message>
+
+    <wsdl:message name="synchronizeClient">
+
+        <wsdl:part name="parameters" element="tns:synchronizeClient">
+        </wsdl:part>
+
+    </wsdl:message>
+
+    <wsdl:message name="synchronizeClientResponse">
+
+        <wsdl:part name="parameters" element="tns:synchronizeClientResponse">
+        </wsdl:part>
+
+    </wsdl:message>
+
+    <wsdl:message name="debug">
+
+        <wsdl:part name="parameters" element="tns:debug">
+        </wsdl:part>
+
+    </wsdl:message>
+
+    <wsdl:portType name="ClientService">
+
+        <wsdl:operation name="synchronizeClient">
+
+            <wsdl:input name="synchronizeClient" message="tns:synchronizeClient">
+            </wsdl:input>
+
+            <wsdl:output name="synchronizeClientResponse" message="tns:synchronizeClientResponse">
+            </wsdl:output>
+
+            <wsdl:fault name="Exception" message="tns:Exception">
+            </wsdl:fault>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="debug">
+
+            <wsdl:input name="debug" message="tns:debug">
+            </wsdl:input>
+
+            <wsdl:output name="debugResponse" message="tns:debugResponse">
+            </wsdl:output>
+
+            <wsdl:fault name="Exception" message="tns:Exception">
+            </wsdl:fault>
+
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <wsdl:binding name="ClientServiceServiceSoapBinding" type="tns:ClientService">
+
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <wsdl:operation name="synchronizeClient">
+
+            <soap:operation soapAction="" style="document"/>
+
+            <wsdl:input name="synchronizeClient">
+
+                <soap:body use="literal"/>
+
+            </wsdl:input>
+
+            <wsdl:output name="synchronizeClientResponse">
+
+                <soap:body use="literal"/>
+
+            </wsdl:output>
+
+            <wsdl:fault name="Exception">
+
+                <soap:fault name="Exception" use="literal"/>
+
+            </wsdl:fault>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="debug">
+
+            <soap:operation soapAction="" style="document"/>
+
+            <wsdl:input name="debug">
+
+                <soap:body use="literal"/>
+
+            </wsdl:input>
+
+            <wsdl:output name="debugResponse">
+
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap:fault name="Exception" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ClientServiceService">
+        <wsdl:port name="ClientServicePort" binding="tns:ClientServiceServiceSoapBinding">
+            <soap:address location="http://localhost:8080/pacws/services/ClientService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

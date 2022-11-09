@@ -1,7 +1,7 @@
 package ca.bc.gov.open.jagpacpoller.services;
 
 import ca.bc.gov.open.jagpacpoller.config.QueueConfig;
-import ca.bc.gov.open.pac.models.PACModel;
+import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.PingModel;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -60,7 +60,7 @@ public class PACPollerService {
         amqpAdmin.declareQueue(pingQueue);
     }
 
-    private void sendToRabbitMq(List<PACModel> items) {
+    private void sendToRabbitMq(List<Client> items) {
         items.forEach(
                 i ->
                         this.rabbitTemplate.convertAndSend(
@@ -86,7 +86,7 @@ public class PACPollerService {
         try {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ordsHost + "pac/poll");
 
-            HttpEntity<List<PACModel>> resp =
+            HttpEntity<List<Client>> resp =
                     restTemplate.exchange(
                             builder.build().toUri(),
                             HttpMethod.GET,

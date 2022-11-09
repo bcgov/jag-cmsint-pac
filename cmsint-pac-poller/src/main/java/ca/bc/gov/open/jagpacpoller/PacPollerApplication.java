@@ -8,9 +8,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableRabbit
 @EnableScheduling
-public class pacPollerApplication {
+public class PacPollerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(pacPollerApplication.class, args);
+        SpringApplication.run(PacPollerApplication.class, args);
     }
 }

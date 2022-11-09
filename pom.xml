@@ -28,7 +28,7 @@
 
     <modules>
         <module>cmsint-pac-poller</module>
-        <module>cmsint-pac-consumer-models</module>
+        <module>cmsint-pac-common-models</module>
         <module>cmsint-pac-code-coverage</module>
         <module>cmsint-pac-consumer</module>
 

@@ -1,5 +1,6 @@
 package ca.bc.gov.pac.open.jagpacnconsumer.services;
 
+import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.PACModel;
 import ca.bc.gov.open.pac.models.PingModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,20 +12,30 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 @Slf4j
 public class ConsumerService {
     private final ObjectMapper objectMapper;
 
+    private final PACService pacService;
+
+
     @Autowired
-    public ConsumerService(ObjectMapper objectMapper) {
+    public ConsumerService(ObjectMapper objectMapper, PACService pacService) {
         this.objectMapper = objectMapper;
+        this.pacService = pacService;
     }
 
     // Disable PAC Queue until PAC is ready to go
-    @RabbitListener(queues = "${pac.pac-queue}")
-    public void receivePACMessage(@Payload Message<PACModel> message)
-            throws JsonProcessingException {
+    @RabbitListener(queues = "${icon.pac-queue}")
+    public void receivePACMessage(@Payload Message<Client> message) throws IOException {
+        try {
+            pacService.processPAC(message.getPayload());
+        } catch (Exception ignored) {
+            log.error("PAC BPM ERROR: " + message + " not processed successfully");
+        }
         System.out.println(new ObjectMapper().writeValueAsString(message.getPayload()));
     }
 
