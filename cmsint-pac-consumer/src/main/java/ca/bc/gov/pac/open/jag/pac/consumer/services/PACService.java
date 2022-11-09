@@ -60,7 +60,8 @@ public class PACService {
         // End of BPM
     }
 
-    private void updatePac(Client client, HttpEntity<Client> respClient) throws JsonProcessingException {
+    private void updatePac(Client client, HttpEntity<Client> respClient)
+            throws JsonProcessingException {
         UriComponentsBuilder builder;
         builder =
                 UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/success")
@@ -92,7 +93,8 @@ public class PACService {
         }
     }
 
-    private void invokeSoapService(SynchronizeClient synchronizeClient) throws JsonProcessingException {
+    private void invokeSoapService(SynchronizeClient synchronizeClient)
+            throws JsonProcessingException {
         // Invoke Soap Service
         try {
             Object soapSvcResp =
