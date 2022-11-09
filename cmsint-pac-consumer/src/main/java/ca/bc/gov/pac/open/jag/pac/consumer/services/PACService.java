@@ -48,37 +48,27 @@ public class PACService {
 
     // PACUpdate BPM
     public void processPAC(Client client) throws JsonProcessingException {
-        // Get event type code
-        UriComponentsBuilder builder =
-                UriComponentsBuilder.fromHttpUrl(cmsintHost + "event-type")
+        HttpEntity<Client> respClient = getEventType(client);
+        if (respClient == null) return;
+
+        SynchronizeClient synchronizeClient = composeSoapServiceRequestBody(respClient);
+
+        invokeSoapService(synchronizeClient);
+
+        UriComponentsBuilder builder;
+        updatePac(client, respClient);
+        // End of BPM
+    }
+
+    private void updatePac(Client client, HttpEntity<Client> respClient) throws JsonProcessingException {
+        UriComponentsBuilder builder;
+        builder =
+                UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/success")
                         .queryParam("clientNumber", client.getClientNumber())
-                        .queryParam("eventSeqNum", client.getEventSeqNum());
+                        .queryParam("eventSeqNum", client.getEventSeqNum())
+                        .queryParam("computerSystemCd", client.getComputerSystemCd());
         try {
             HttpEntity<Map<String, String>> resp =
-                    restTemplate.exchange(
-                            builder.toUriString(),
-                            HttpMethod.POST,
-                            new HttpEntity<>(new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
-            client.setEventTypeCode(resp.getBody().get("eventTypeCode"));
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "getEventType")));
-        } catch (Exception ex) {
-            log.error(
-                    objectMapper.writeValueAsString(
-                            new OrdsErrorLog(
-                                    "Error received from ORDS",
-                                    "getEventType",
-                                    ex.getMessage(),
-                                    client)));
-            throw new ORDSException();
-        }
-
-        builder = UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/update");
-        HttpEntity<Client> respClient;
-        try {
-            respClient =
                     restTemplate.exchange(
                             builder.toUriString(),
                             HttpMethod.POST,
@@ -86,22 +76,42 @@ public class PACService {
                             new ParameterizedTypeReference<>() {});
             log.info(
                     objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "pacUpdate")));
+                            new RequestSuccessLog("Request Success", "updateSuccess")));
             if (respClient.getBody().getStatus().equals("0")) {
-                log.info("PAC update cancel");
-                return;
+                log.info("PAC update success");
             }
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
                             new OrdsErrorLog(
                                     "Error received from ORDS",
-                                    "pacUpdate",
+                                    "updateSuccess",
                                     ex.getMessage(),
                                     client)));
             throw new ORDSException();
         }
+    }
 
+    private void invokeSoapService(SynchronizeClient synchronizeClient) throws JsonProcessingException {
+        // Invoke Soap Service
+        try {
+            Object soapSvcResp =
+                    webServiceTemplate.marshalSendAndReceive(pacServiceUrl, synchronizeClient);
+            log.info(
+                    objectMapper.writeValueAsString(
+                            new RequestSuccessLog("Request Success", "synchronizeClient")));
+        } catch (Exception ex) {
+            log.error(
+                    objectMapper.writeValueAsString(
+                            new OrdsErrorLog(
+                                    "Error received from SOAP SERVICE - synchronizeClient",
+                                    "pacUpdate",
+                                    ex.getMessage(),
+                                    synchronizeClient)));
+        }
+    }
+
+    private SynchronizeClient composeSoapServiceRequestBody(HttpEntity<Client> respClient) {
         // Compose Soap Service Request Body
         SynchronizeClient synchronizeClient = new SynchronizeClient();
         synchronizeClient.setCsNumber(respClient.getBody().getCsNum());
@@ -148,31 +158,41 @@ public class PACService {
                                 + " is not expected");
                 break;
         }
+        return synchronizeClient;
+    }
 
-        // Invoke Soap Service
+    private HttpEntity<Client> getEventType(Client client) throws JsonProcessingException {
+        // Get event type code
+        UriComponentsBuilder builder =
+                UriComponentsBuilder.fromHttpUrl(cmsintHost + "event-type")
+                        .queryParam("clientNumber", client.getClientNumber())
+                        .queryParam("eventSeqNum", client.getEventSeqNum());
         try {
-            Object soapSvcResp =
-                    webServiceTemplate.marshalSendAndReceive(pacServiceUrl, synchronizeClient);
+            HttpEntity<Map<String, String>> resp =
+                    restTemplate.exchange(
+                            builder.toUriString(),
+                            HttpMethod.POST,
+                            new HttpEntity<>(new HttpHeaders()),
+                            new ParameterizedTypeReference<>() {});
+            client.setEventTypeCode(resp.getBody().get("eventTypeCode"));
             log.info(
                     objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "synchronizeClient")));
+                            new RequestSuccessLog("Request Success", "getEventType")));
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
                             new OrdsErrorLog(
-                                    "Error received from SOAP SERVICE - synchronizeClient",
-                                    "pacUpdate",
+                                    "Error received from ORDS",
+                                    "getEventType",
                                     ex.getMessage(),
-                                    synchronizeClient)));
+                                    client)));
+            throw new ORDSException();
         }
 
-        builder =
-                UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/success")
-                        .queryParam("clientNumber", client.getClientNumber())
-                        .queryParam("eventSeqNum", client.getEventSeqNum())
-                        .queryParam("computerSystemCd", client.getComputerSystemCd());
+        builder = UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/update");
+        HttpEntity<Client> respClient;
         try {
-            HttpEntity<Map<String, String>> resp =
+            respClient =
                     restTemplate.exchange(
                             builder.toUriString(),
                             HttpMethod.POST,
@@ -180,20 +200,21 @@ public class PACService {
                             new ParameterizedTypeReference<>() {});
             log.info(
                     objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "updateSuccess")));
+                            new RequestSuccessLog("Request Success", "pacUpdate")));
             if (respClient.getBody().getStatus().equals("0")) {
-                log.info("PAC update success");
+                log.info("PAC update cancel");
+                return null;
             }
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
                             new OrdsErrorLog(
                                     "Error received from ORDS",
-                                    "updateSuccess",
+                                    "pacUpdate",
                                     ex.getMessage(),
                                     client)));
             throw new ORDSException();
         }
-        // End of BPM
+        return respClient;
     }
 }
