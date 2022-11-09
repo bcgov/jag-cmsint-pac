@@ -1,6 +1,6 @@
-package ca.bc.gov.open.jagpacpoller.services;
+package ca.bc.gov.open.jag.pac.poller.services;
 
-import ca.bc.gov.open.jagpacpoller.config.QueueConfig;
+import ca.bc.gov.open.jag.pac.poller.config.QueueConfig;
 import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.PingModel;
 import java.util.List;

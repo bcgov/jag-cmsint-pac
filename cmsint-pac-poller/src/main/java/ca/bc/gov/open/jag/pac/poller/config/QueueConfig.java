@@ -1,4 +1,4 @@
-package ca.bc.gov.open.jagpacpoller.config;
+package ca.bc.gov.open.jag.pac.poller.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

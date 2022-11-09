@@ -1,4 +1,4 @@
-package ca.bc.gov.pac.open.jagpacnconsumer.model;
+package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package ca.bc.gov.open.jagpacpoller;
+package ca.bc.gov.open.jag.pac.poller;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;

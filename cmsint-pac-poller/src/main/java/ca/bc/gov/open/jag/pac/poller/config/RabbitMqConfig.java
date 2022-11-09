@@ -1,4 +1,4 @@
-package ca.bc.gov.open.jagpacpoller.config;
+package ca.bc.gov.open.jag.pac.poller.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

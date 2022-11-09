@@ -1,10 +1,10 @@
-package ca.bc.gov.pac.open.jagpacnconsumer.services;
+package ca.bc.gov.pac.open.jag.pac.consumer.services;
 
 import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.OrdsErrorLog;
 import ca.bc.gov.open.pac.models.RequestSuccessLog;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
-import ca.bc.gov.pac.open.jagpacnconsumer.model.SynchronizeClient;
+import ca.bc.gov.pac.open.jag.pac.consumer.model.SynchronizeClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;

@@ -1,9 +1,9 @@
-package ca.bc.gov.open.jagpacpoller;
+package ca.bc.gov.open.jag.pac.poller;
 
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.open.jagpacpoller.config.QueueConfig;
-import ca.bc.gov.open.jagpacpoller.services.PACPollerService;
+import ca.bc.gov.open.jag.pac.poller.config.QueueConfig;
+import ca.bc.gov.open.jag.pac.poller.services.PACPollerService;
 import ca.bc.gov.open.pac.models.PACModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
