@@ -1,9 +1,12 @@
 package ca.bc.gov.open.pac.models;
 
+import lombok.*;
+import org.springframework.util.SerializationUtils;
+
 import java.io.Serializable;
-import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Client implements Serializable {
     private String clientNumber;
     private String csNum;
@@ -31,4 +34,9 @@ public class Client implements Serializable {
     private String livingUnit;
     // to accept the status if update process cancels
     private String status;
+
+  public Client newInstance(){
+      byte[] serializedClient = SerializationUtils.serialize(this);
+      return (Client) SerializationUtils.deserialize(serializedClient);
+  }
 }

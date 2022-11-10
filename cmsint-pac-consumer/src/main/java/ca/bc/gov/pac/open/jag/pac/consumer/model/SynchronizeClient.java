@@ -1,19 +1,21 @@
 package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
+import ca.bc.gov.open.pac.models.Client;
 import lombok.Data;
 
 @Data
-public class SynchronizeClient {
-    private String csNumber;
-    private String surname;
-    private String givenName1;
-    private String givenName2;
-    private String birthDate;
-    private String gender;
-    private String photoGuid;
-    private String probableDischargeDate;
-    private String outLocation;
-    private String outReason;
-    private String centre;
-    private String livingUnit;
+public abstract class SynchronizeClient {
+    protected String csNumber;
+    protected String surname;
+    protected String givenName1;
+    protected String givenName2;
+    protected String birthDate;
+    protected String gender;
+    protected String photoGuid;
+    protected String probableDischargeDate;
+    protected String outLocation;
+    protected String outReason;
+    protected String centre;
+    protected String livingUnit;
+
 }

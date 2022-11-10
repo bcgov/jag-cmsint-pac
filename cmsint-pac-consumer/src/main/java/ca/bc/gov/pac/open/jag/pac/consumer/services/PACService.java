@@ -4,10 +4,13 @@ import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.OrdsErrorLog;
 import ca.bc.gov.open.pac.models.RequestSuccessLog;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
-import ca.bc.gov.pac.open.jag.pac.consumer.model.SynchronizeClient;
+import ca.bc.gov.pac.open.jag.pac.consumer.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,39 +51,41 @@ public class PACService {
 
     // PACUpdate BPM
     public void processPAC(Client client) throws JsonProcessingException {
-        HttpEntity<Client> respClient = getEventType(client);
-        if (respClient == null) return;
 
-        SynchronizeClient synchronizeClient = composeSoapServiceRequestBody(respClient);
+        HttpEntity<Client> eventTypeResponse = getEventType(client);
+        if (eventTypeResponse == null) return;
+
+        Client eventClient = eventTypeResponse.getBody();
+        if (eventClient == null) return;
+
+        SynchronizeClient synchronizeClient = composeSoapServiceRequestBody(eventClient);
 
         invokeSoapService(synchronizeClient);
 
         UriComponentsBuilder builder;
-        updatePac(client, respClient);
+        updatePac(client, eventClient);
         // End of BPM
     }
 
-    private void updatePac(Client client, HttpEntity<Client> respClient)
+    private void updatePac(Client client, Client eventClient)
             throws JsonProcessingException {
-        UriComponentsBuilder builder;
-        builder =
-                UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/success")
-                        .queryParam("clientNumber", client.getClientNumber())
-                        .queryParam("eventSeqNum", client.getEventSeqNum())
-                        .queryParam("computerSystemCd", client.getComputerSystemCd());
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(cmsHost + "pac/success")
+                .queryParam("clientNumber", client.getClientNumber())
+                .queryParam("eventSeqNum", client.getEventSeqNum())
+                .queryParam("computerSystemCd", client.getComputerSystemCd());
         try {
             HttpEntity<Map<String, String>> resp =
                     restTemplate.exchange(
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
+                            new ParameterizedTypeReference<>() {
+                            });
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "updateSuccess")));
-            if (respClient.getBody().getStatus().equals("0")) {
-                log.info("PAC update success");
-            }
+            if (eventClient.getStatus().equals("0")) log.info("PAC update success");
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
@@ -113,52 +118,16 @@ public class PACService {
         }
     }
 
-    private SynchronizeClient composeSoapServiceRequestBody(HttpEntity<Client> respClient) {
+    private SynchronizeClient composeSoapServiceRequestBody(Client client) {
         // Compose Soap Service Request Body
-        SynchronizeClient synchronizeClient = new SynchronizeClient();
-        synchronizeClient.setCsNumber(respClient.getBody().getCsNum());
-        switch (respClient.getBody().getEventTypeCode()) {
-            case "CADM":
-                synchronizeClient.setSurname(respClient.getBody().getSurname());
-                synchronizeClient.setGivenName1(respClient.getBody().getGivenName1());
-                synchronizeClient.setGivenName2(respClient.getBody().getGivenName2());
-                synchronizeClient.setBirthDate(respClient.getBody().getBirthDate());
-                synchronizeClient.setGender(respClient.getBody().getGender());
-                synchronizeClient.setPhotoGuid(respClient.getBody().getPhotoGUID());
-                synchronizeClient.setProbableDischargeDate(
-                        respClient.getBody().getProbableDischargeDate());
-                synchronizeClient.setCentre(respClient.getBody().getCustodyCenter());
-                synchronizeClient.setLivingUnit(respClient.getBody().getLivingUnit());
-                break;
-            case "CDEM":
-            case "CREL":
-            case "CLUN":
-                synchronizeClient.setSurname(respClient.getBody().getSurname());
-                synchronizeClient.setGivenName1(respClient.getBody().getGivenName1());
-                synchronizeClient.setGivenName2(respClient.getBody().getGivenName2());
-                synchronizeClient.setBirthDate(respClient.getBody().getBirthDate());
-                synchronizeClient.setGender(respClient.getBody().getGender());
-                synchronizeClient.setPhotoGuid(respClient.getBody().getPhotoGUID());
-                synchronizeClient.setCentre(respClient.getBody().getCustodyCenter());
-                synchronizeClient.setLivingUnit(respClient.getBody().getLivingUnit());
-                break;
-            case "CKEY":
-                synchronizeClient.setProbableDischargeDate(
-                        respClient.getBody().getProbableDischargeDate());
-                break;
-            case "CLOC":
-                synchronizeClient.setOutLocation(respClient.getBody().getPacLocationCd());
-                synchronizeClient.setOutReason(respClient.getBody().getOutReason());
-                break;
-            case "CIMG":
-                synchronizeClient.setPhotoGuid(respClient.getBody().getPhotoGUID());
-                break;
-            default:
-                log.warn(
-                        "Received EventTypeCode "
-                                + respClient.getBody().getEventTypeCode()
-                                + " is not expected");
-                break;
+        SynchronizeClient synchronizeClient = null;
+        try {
+            synchronizeClient = EventTypeEnum.valueOf(client.getEventTypeCode()).getSynchronizeClient(client);
+        } catch (IllegalArgumentException e) {
+            log.warn(
+                    "Received EventTypeCode "
+                            + client.getEventTypeCode()
+                            + " is not expected");
         }
         return synchronizeClient;
     }
@@ -175,8 +144,9 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
-            client.setEventTypeCode(resp.getBody().get("eventTypeCode"));
+                            new ParameterizedTypeReference<>() {
+                            });
+            client.newInstance().setEventTypeCode(resp.getBody().get("eventTypeCode"));
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "getEventType")));
@@ -199,7 +169,8 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
+                            new ParameterizedTypeReference<>() {
+                            });
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "pacUpdate")));
