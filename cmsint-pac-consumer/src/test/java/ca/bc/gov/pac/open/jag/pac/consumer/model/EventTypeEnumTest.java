@@ -1,6 +1,6 @@
 package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.bc.gov.open.pac.models.Client;
 import org.junit.jupiter.api.Test;
