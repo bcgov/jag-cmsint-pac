@@ -224,6 +224,4 @@ public class PACService {
         }
         return respClient;
     }
-
-    public static void main(String[] args) {}
 }
