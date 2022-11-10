@@ -1,7 +1,6 @@
 package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
 import ca.bc.gov.open.pac.models.Client;
-
 import java.util.function.Function;
 
 public enum EventTypeEnum {
@@ -19,7 +18,7 @@ public enum EventTypeEnum {
         this.synchronizeClientFunction = synchronizeClientFunction;
     }
 
-    public SynchronizeClient getSynchronizeClient(Client client){
+    public SynchronizeClient getSynchronizeClient(Client client) {
         return synchronizeClientFunction.apply(client);
     }
 }

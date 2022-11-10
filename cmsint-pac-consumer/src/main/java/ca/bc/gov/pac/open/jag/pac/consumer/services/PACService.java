@@ -7,10 +7,9 @@ import ca.bc.gov.open.pac.models.exceptions.ORDSException;
 import ca.bc.gov.pac.open.jag.pac.consumer.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,40 +51,78 @@ public class PACService {
     // PACUpdate BPM
     public void processPAC(Client client) throws JsonProcessingException {
 
-        HttpEntity<Client> eventTypeResponse = getEventType(client);
-        if (eventTypeResponse == null) return;
+        String eventType = getEventType(client);
 
-        Client eventClient = eventTypeResponse.getBody();
-        if (eventClient == null) return;
+        Client eventClient = client.getCopyWithNewEventTypeCode(eventType);
 
-        SynchronizeClient synchronizeClient = composeSoapServiceRequestBody(eventClient);
+        Optional<Client> updatedClientOptional = pacUpdate(eventClient);
+
+        if (!updatedClientOptional.isPresent()) return;
+
+        Client updatedClient = updatedClientOptional.get();
+
+        SynchronizeClient synchronizeClient = composeSoapServiceRequestBody(updatedClient);
 
         invokeSoapService(synchronizeClient);
 
-        UriComponentsBuilder builder;
-        updatePac(client, eventClient);
+        pacSuccess(updatedClient);
         // End of BPM
     }
 
-    private void updatePac(Client client, Client eventClient)
-            throws JsonProcessingException {
-        UriComponentsBuilder builder = UriComponentsBuilder
-                .fromHttpUrl(cmsHost + "pac/success")
-                .queryParam("clientNumber", client.getClientNumber())
-                .queryParam("eventSeqNum", client.getEventSeqNum())
-                .queryParam("computerSystemCd", client.getComputerSystemCd());
+    private Optional<Client> pacUpdate(Client client) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/update");
         try {
-            HttpEntity<Map<String, String>> resp =
+            HttpEntity<Client> respClient =
                     restTemplate.exchange(
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {
-                            });
+                            new ParameterizedTypeReference<>() {});
+            log.info(
+                    objectMapper.writeValueAsString(
+                            new RequestSuccessLog("Request Success", "pacUpdate")));
+
+            if (respClient.getBody().getStatus().equals("0")) {
+                log.info("PAC update cancel");
+                return Optional.empty();
+            }
+            return Optional.ofNullable(respClient.getBody());
+        } catch (Exception ex) {
+
+            try {
+                log.error(
+                        objectMapper.writeValueAsString(
+                                new OrdsErrorLog(
+                                        "Error received from ORDS",
+                                        "pacUpdate",
+                                        ex.getMessage(),
+                                        client)));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            throw new ORDSException();
+        }
+    }
+
+    private void pacSuccess(Client client, Client eventClient) throws JsonProcessingException {
+        UriComponentsBuilder builder =
+                UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/success")
+                        .queryParam("clientNumber", client.getClientNumber())
+                        .queryParam("eventSeqNum", client.getEventSeqNum())
+                        .queryParam("computerSystemCd", client.getComputerSystemCd());
+        try {
+            restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    new HttpEntity<>(client, new HttpHeaders()),
+                    new ParameterizedTypeReference<>() {});
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "updateSuccess")));
+
             if (eventClient.getStatus().equals("0")) log.info("PAC update success");
+
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
@@ -102,8 +139,7 @@ public class PACService {
             throws JsonProcessingException {
         // Invoke Soap Service
         try {
-            Object soapSvcResp =
-                    webServiceTemplate.marshalSendAndReceive(pacServiceUrl, synchronizeClient);
+            webServiceTemplate.marshalSendAndReceive(pacServiceUrl, synchronizeClient);
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "synchronizeClient")));
@@ -122,18 +158,15 @@ public class PACService {
         // Compose Soap Service Request Body
         SynchronizeClient synchronizeClient = null;
         try {
-            synchronizeClient = EventTypeEnum.valueOf(client.getEventTypeCode()).getSynchronizeClient(client);
+            synchronizeClient =
+                    EventTypeEnum.valueOf(client.getEventTypeCode()).getSynchronizeClient(client);
         } catch (IllegalArgumentException e) {
-            log.warn(
-                    "Received EventTypeCode "
-                            + client.getEventTypeCode()
-                            + " is not expected");
+            log.warn("Received EventTypeCode " + client.getEventTypeCode() + " is not expected");
         }
         return synchronizeClient;
     }
 
-    private HttpEntity<Client> getEventType(Client client) throws JsonProcessingException {
-        // Get event type code
+    private String getEventType(Client client) throws ORDSException, JsonProcessingException {
         UriComponentsBuilder builder =
                 UriComponentsBuilder.fromHttpUrl(cmsintHost + "event-type")
                         .queryParam("clientNumber", client.getClientNumber())
@@ -144,12 +177,11 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {
-                            });
-            client.newInstance().setEventTypeCode(resp.getBody().get("eventTypeCode"));
+                            new ParameterizedTypeReference<>() {});
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "getEventType")));
+            return Objects.requireNonNull(resp.getBody()).get("eventTypeCode");
         } catch (Exception ex) {
             log.error(
                     objectMapper.writeValueAsString(
@@ -160,7 +192,10 @@ public class PACService {
                                     client)));
             throw new ORDSException();
         }
+    }
 
+    private HttpEntity<Client> pacSuccess(Client client) throws JsonProcessingException {
+        UriComponentsBuilder builder;
         builder = UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/update");
         HttpEntity<Client> respClient;
         try {
@@ -169,8 +204,7 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {
-                            });
+                            new ParameterizedTypeReference<>() {});
             log.info(
                     objectMapper.writeValueAsString(
                             new RequestSuccessLog("Request Success", "pacUpdate")));
@@ -190,4 +224,6 @@ public class PACService {
         }
         return respClient;
     }
+
+    public static void main(String[] args) {}
 }

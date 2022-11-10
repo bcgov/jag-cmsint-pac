@@ -1,36 +1,38 @@
 package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ca.bc.gov.open.pac.models.Client;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class EventTypeEnumTest {
-    final Client client = new Client("clientNumber"
-            , "csNum"
-            , "eventSeqNum"
-            , "eventTypeCode"
-            , "surname"
-            , "givenName1"
-            , "givenName2"
-            , "birthDate"
-            , "gender"
-            , "photoGUID"
-            , "probableDischargeDate"
-            , "pacLocationCd"
-            , "outReason"
-            , "newerSequence"
-            , "computerSystemCd"
-            , "isActive"
-            , "sysDate"
-            , "fromCsNum"
-            , "userId"
-            , "mergeUserId"
-            , "icsLocationCd"
-            , "isIn"
-            , "custodyCenter"
-            , "livingUnit"
-            , "status");
+    final Client client =
+            new Client(
+                    "clientNumber",
+                    "csNum",
+                    "eventSeqNum",
+                    "eventTypeCode",
+                    "surname",
+                    "givenName1",
+                    "givenName2",
+                    "birthDate",
+                    "gender",
+                    "photoGUID",
+                    "probableDischargeDate",
+                    "pacLocationCd",
+                    "outReason",
+                    "newerSequence",
+                    "computerSystemCd",
+                    "isActive",
+                    "sysDate",
+                    "fromCsNum",
+                    "userId",
+                    "mergeUserId",
+                    "icsLocationCd",
+                    "isIn",
+                    "custodyCenter",
+                    "livingUnit",
+                    "status");
 
     @Test
     void cadmEventCodeProducesCadmSynchronizeClient() {
@@ -40,6 +42,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void cdemEventCodeProducesCdemSynchronizeClient() {
 
@@ -48,6 +51,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void cimgEventCodeProducesCimgSynchronizeClient() {
 
@@ -56,6 +60,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void ckeyEventCodeProducesCkeySynchronizeClient() {
 
@@ -64,6 +69,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void clocEventCodeProducesClocSynchronizeClient() {
 
@@ -72,6 +78,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void clunEventCodeProducesClunSynchronizeClient() {
 
@@ -80,6 +87,7 @@ class EventTypeEnumTest {
 
         assertEquals(expectedClient, actualClient);
     }
+
     @Test
     void crelEventCodeProducesClunSynchronizeClient() {
 

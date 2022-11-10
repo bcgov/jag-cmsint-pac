@@ -1,6 +1,5 @@
 package ca.bc.gov.pac.open.jag.pac.consumer.model;
 
-import ca.bc.gov.open.pac.models.Client;
 import lombok.Data;
 
 @Data
@@ -17,5 +16,4 @@ public abstract class SynchronizeClient {
     protected String outReason;
     protected String centre;
     protected String livingUnit;
-
 }
