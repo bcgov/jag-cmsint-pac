@@ -1,16 +1,15 @@
 package ca.bc.gov.open.pac.models.serializers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.time.Instant;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.time.Instant;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public final class InstantSoapConverterTest {
 
@@ -53,7 +52,6 @@ public final class InstantSoapConverterTest {
         assertEquals(isoStringSeconds, instant.getEpochSecond());
         assertEquals(isoStringNanos, instant.getNano());
     }
-
 
     @Test
     void parseIsoReturnsNullWhenFormatIsNotRecognizable() {
