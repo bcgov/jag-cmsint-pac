@@ -4,12 +4,10 @@ import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.OrdsErrorLog;
 import ca.bc.gov.open.pac.models.RequestSuccessLog;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
-import ca.bc.gov.pac.open.jag.pac.consumer.model.*;
+import ca.bc.gov.pac.open.jag.pac.consumer.model.EventTypeEnum;
+import ca.bc.gov.pac.open.jag.pac.consumer.model.SynchronizeClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.ws.client.core.WebServiceTemplate;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -75,7 +77,8 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
+                            new ParameterizedTypeReference<>() {
+                            });
 
             log.info(new RequestSuccessLog("Request Success", "pacUpdate").toString());
 
@@ -88,10 +91,10 @@ public class PACService {
 
             log.error(
                     new OrdsErrorLog(
-                                    "Error received from ORDS",
-                                    "pacUpdate",
-                                    ex.getMessage(),
-                                    client)
+                            "Error received from ORDS",
+                            "pacUpdate",
+                            ex.getMessage(),
+                            client)
                             .toString());
 
             throw new ORDSException();
@@ -109,16 +112,17 @@ public class PACService {
                     builder.toUriString(),
                     HttpMethod.POST,
                     new HttpEntity<>(client, new HttpHeaders()),
-                    new ParameterizedTypeReference<>() {});
+                    new ParameterizedTypeReference<>() {
+                    });
             log.info(new RequestSuccessLog("Request Success", "updateSuccess").toString());
             if (eventClient.getStatus().equals("0")) log.info("PAC update success");
         } catch (Exception ex) {
             log.error(
                     new OrdsErrorLog(
-                                    "Error received from ORDS",
-                                    "updateSuccess",
-                                    ex.getMessage(),
-                                    client)
+                            "Error received from ORDS",
+                            "updateSuccess",
+                            ex.getMessage(),
+                            client)
                             .toString());
             throw new ORDSException();
         }
@@ -133,10 +137,10 @@ public class PACService {
         } catch (Exception ex) {
             log.error(
                     new OrdsErrorLog(
-                                    "Error received from SOAP SERVICE - synchronizeClient",
-                                    "pacUpdate",
-                                    ex.getMessage(),
-                                    synchronizeClient)
+                            "Error received from SOAP SERVICE - synchronizeClient",
+                            "pacUpdate",
+                            ex.getMessage(),
+                            synchronizeClient)
                             .toString());
         }
     }
@@ -164,47 +168,55 @@ public class PACService {
                             builder.toUriString(),
                             HttpMethod.POST,
                             new HttpEntity<>(new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
+                            new ParameterizedTypeReference<>() {
+                            });
             log.info(new RequestSuccessLog("Request Success", "getEventType").toString());
             return Objects.requireNonNull(resp.getBody()).get("eventTypeCode");
         } catch (Exception ex) {
             log.error(
                     new OrdsErrorLog(
-                                    "Error received from ORDS",
-                                    "getEventType",
-                                    ex.getMessage(),
-                                    client)
+                            "Error received from ORDS",
+                            "getEventType",
+                            ex.getMessage(),
+                            client)
                             .toString());
             throw new ORDSException();
         }
     }
 
-    private HttpEntity<Client> pacSuccess(Client client) throws JsonProcessingException {
+    private HttpEntity<Client> sendUpdateRequest(Client client) {
         UriComponentsBuilder builder;
         builder = UriComponentsBuilder.fromHttpUrl(cmsHost + "pac/update");
-        HttpEntity<Client> respClient;
+        HttpEntity<Client> respClient =
+                restTemplate.exchange(
+                        builder.toUriString(),
+                        HttpMethod.POST,
+                        new HttpEntity<>(client, new HttpHeaders()),
+                        new ParameterizedTypeReference<>() {
+                        });
+
+        log.info(new RequestSuccessLog("Request Success", "pacUpdate").toString());
+
+        return respClient;
+    }
+
+    private HttpEntity<Client> pacSuccess(Client client) {
         try {
-            respClient =
-                    restTemplate.exchange(
-                            builder.toUriString(),
-                            HttpMethod.POST,
-                            new HttpEntity<>(client, new HttpHeaders()),
-                            new ParameterizedTypeReference<>() {});
-            log.info(new RequestSuccessLog("Request Success", "pacUpdate").toString());
+            HttpEntity<Client> respClient = sendUpdateRequest(client);
             if (respClient.getBody().getStatus().equals("0")) {
                 log.info("PAC update cancel");
                 return null;
             }
+            return respClient;
         } catch (Exception ex) {
             log.error(
                     new OrdsErrorLog(
-                                    "Error received from ORDS",
-                                    "pacUpdate",
-                                    ex.getMessage(),
-                                    client)
+                            "Error received from ORDS",
+                            "pacUpdate",
+                            ex.getMessage(),
+                            client)
                             .toString());
             throw new ORDSException();
         }
-        return respClient;
     }
 }
