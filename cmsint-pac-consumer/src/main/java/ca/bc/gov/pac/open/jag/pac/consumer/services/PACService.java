@@ -78,9 +78,8 @@ public class PACService {
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
                             new ParameterizedTypeReference<>() {});
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "pacUpdate")));
+
+            log.info(new RequestSuccessLog("Request Success", "pacUpdate").toString());
 
             if (respClient.getBody().getStatus().equals("0")) {
                 log.info("PAC update cancel");
@@ -89,17 +88,13 @@ public class PACService {
             return Optional.ofNullable(respClient.getBody());
         } catch (Exception ex) {
 
-            try {
-                log.error(
-                        objectMapper.writeValueAsString(
-                                new OrdsErrorLog(
-                                        "Error received from ORDS",
-                                        "pacUpdate",
-                                        ex.getMessage(),
-                                        client)));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            log.error(
+                    new OrdsErrorLog(
+                                    "Error received from ORDS",
+                                    "pacUpdate",
+                                    ex.getMessage(),
+                                    client)
+                            .toString());
 
             throw new ORDSException();
         }
@@ -117,20 +112,18 @@ public class PACService {
                     HttpMethod.POST,
                     new HttpEntity<>(client, new HttpHeaders()),
                     new ParameterizedTypeReference<>() {});
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "updateSuccess")));
+            log.info(new RequestSuccessLog("Request Success", "updateSuccess").toString());
 
             if (eventClient.getStatus().equals("0")) log.info("PAC update success");
 
         } catch (Exception ex) {
             log.error(
-                    objectMapper.writeValueAsString(
-                            new OrdsErrorLog(
+                    new OrdsErrorLog(
                                     "Error received from ORDS",
                                     "updateSuccess",
                                     ex.getMessage(),
-                                    client)));
+                                    client)
+                            .toString());
             throw new ORDSException();
         }
     }
@@ -140,17 +133,15 @@ public class PACService {
         // Invoke Soap Service
         try {
             webServiceTemplate.marshalSendAndReceive(pacServiceUrl, synchronizeClient);
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "synchronizeClient")));
+            log.info(new RequestSuccessLog("Request Success", "synchronizeClient").toString());
         } catch (Exception ex) {
             log.error(
-                    objectMapper.writeValueAsString(
-                            new OrdsErrorLog(
+                    new OrdsErrorLog(
                                     "Error received from SOAP SERVICE - synchronizeClient",
                                     "pacUpdate",
                                     ex.getMessage(),
-                                    synchronizeClient)));
+                                    synchronizeClient)
+                            .toString());
         }
     }
 
@@ -178,18 +169,16 @@ public class PACService {
                             HttpMethod.POST,
                             new HttpEntity<>(new HttpHeaders()),
                             new ParameterizedTypeReference<>() {});
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "getEventType")));
+            log.info(new RequestSuccessLog("Request Success", "getEventType").toString());
             return Objects.requireNonNull(resp.getBody()).get("eventTypeCode");
         } catch (Exception ex) {
             log.error(
-                    objectMapper.writeValueAsString(
-                            new OrdsErrorLog(
+                    new OrdsErrorLog(
                                     "Error received from ORDS",
                                     "getEventType",
                                     ex.getMessage(),
-                                    client)));
+                                    client)
+                            .toString());
             throw new ORDSException();
         }
     }
@@ -205,21 +194,19 @@ public class PACService {
                             HttpMethod.POST,
                             new HttpEntity<>(client, new HttpHeaders()),
                             new ParameterizedTypeReference<>() {});
-            log.info(
-                    objectMapper.writeValueAsString(
-                            new RequestSuccessLog("Request Success", "pacUpdate")));
+            log.info(new RequestSuccessLog("Request Success", "pacUpdate").toString());
             if (respClient.getBody().getStatus().equals("0")) {
                 log.info("PAC update cancel");
                 return null;
             }
         } catch (Exception ex) {
             log.error(
-                    objectMapper.writeValueAsString(
-                            new OrdsErrorLog(
+                    new OrdsErrorLog(
                                     "Error received from ORDS",
                                     "pacUpdate",
                                     ex.getMessage(),
-                                    client)));
+                                    client)
+                            .toString());
             throw new ORDSException();
         }
         return respClient;
