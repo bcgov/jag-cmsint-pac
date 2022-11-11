@@ -1,6 +1,6 @@
 package ca.bc.gov.open.pac.models.serializers;
 
-import static ca.bc.gov.open.pac.models.serializers.DateParser.parseDate;
+import static ca.bc.gov.open.pac.models.serializers.DateParser.parseDateToInstant;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -32,12 +32,12 @@ public final class InstantSoapConverter {
 
     public static Instant parse(String value) {
         try {
-            return parseDate(longDatePattern, locale, timezone, value).toInstant();
+            return parseDateToInstant(longDatePattern, locale, timezone, value);
         } catch (ParseException ignored) {
         }
 
         try {
-            return parseDate(shortDatePattern, locale, timezone, value).toInstant();
+            return parseDateToInstant(shortDatePattern, locale, timezone, value);
         } catch (ParseException ignored) {
         }
 
