@@ -1,52 +1,59 @@
 package ca.bc.gov.open.pac.models.serializers;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public final class InstantSoapConverter {
 
-    private InstantSoapConverter() {}
+    private InstantSoapConverter() {
+    }
 
     public static String print(Instant value) {
-        String out =
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0")
-                        .withZone(ZoneId.of("GMT-7"))
-                        .withLocale(Locale.US)
-                        .format(value);
-        return out;
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0")
+                .withZone(ZoneId.of("GMT-7"))
+                .withLocale(Locale.US)
+                .format(value);
+    }
+
+    private static Date parseDate(String pattern, Locale locale, TimeZone tz, String source)
+            throws ParseException {
+        var sdf = new SimpleDateFormat(pattern, locale);
+        sdf.setTimeZone(tz);
+        return sdf.parse(source);
     }
 
     public static Instant parse(String value) {
+        var tz = TimeZone.getTimeZone("GMT-7");
+        var longDatePattern = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+        var shortDatePattern = "dd-MMM-yy";
+
         try {
-            Date d;
-            // Try to parse a datetime first then try date only if both fail return null
-            try {
-                // Date time parser
-                var sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.US);
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT-7"));
-                d = sdf.parse(value);
-            } catch (ParseException ex) {
-                try {
-                    var sdf = new SimpleDateFormat("dd-MMM-yy", Locale.US);
-                    sdf.setTimeZone(TimeZone.getTimeZone("GMT-7"));
-                    d = sdf.parse(value);
-                } catch (ParseException ex2) {
-                    return Instant.parse(value + "Z");
-                }
-            }
-            return d.toInstant();
-        } catch (Exception ex) {
+            return parseDate(longDatePattern, Locale.US, tz, value).toInstant();
+        } catch (ParseException ignored) {
+        }
+
+        try {
+            return parseDate(shortDatePattern, Locale.US, tz, value).toInstant();
+        } catch (ParseException ignored) {
+        }
+
+        try {
+            return Instant.parse(value + "Z");
+        } catch (DateTimeParseException ignored) {
             log.warn("Bad date received from soap request - invalid date format: " + value);
             return null;
         }
+
     }
 
     public static Instant parseISO(String value) {
