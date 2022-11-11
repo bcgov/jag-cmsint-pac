@@ -36,7 +36,6 @@ public class PACService {
 
     private final WebServiceTemplate webServiceTemplate;
     private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
 
     @Autowired
     public PACService(
@@ -44,7 +43,6 @@ public class PACService {
             ObjectMapper objectMapper,
             WebServiceTemplate webServiceTemplate) {
         this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
         this.webServiceTemplate = webServiceTemplate;
     }
 
@@ -113,9 +111,7 @@ public class PACService {
                     new HttpEntity<>(client, new HttpHeaders()),
                     new ParameterizedTypeReference<>() {});
             log.info(new RequestSuccessLog("Request Success", "updateSuccess").toString());
-
             if (eventClient.getStatus().equals("0")) log.info("PAC update success");
-
         } catch (Exception ex) {
             log.error(
                     new OrdsErrorLog(
