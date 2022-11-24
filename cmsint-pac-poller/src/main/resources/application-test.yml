@@ -15,8 +15,8 @@ spring:
   rabbitmq:
     host: ${RABBIT_MQ_HOST:127.0.0.1}
     port: 5672
-    username: ${RABBIT_MQ_HOST:guest}
-    password: ${RABBIT_MQ_HOST:guest}
+    username: ${RABBIT_MQ_HOST}
+    password: ${RABBIT_MQ_HOST}
 
 server:
   port: ${POLLER_SERVER_PORT:8080}
