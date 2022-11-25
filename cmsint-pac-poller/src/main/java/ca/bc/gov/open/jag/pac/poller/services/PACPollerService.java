@@ -225,6 +225,7 @@ public class PACPollerService {
         }
     }
 
+//    TODO this method should be removed after checking if we are going to use it or not
     private Client pacUpdateClient(Client client) {
         URI url = getUri(ordProperties.getCmsIntBaseUrl() + ordProperties.getSuccessEndpoint());
         try {
