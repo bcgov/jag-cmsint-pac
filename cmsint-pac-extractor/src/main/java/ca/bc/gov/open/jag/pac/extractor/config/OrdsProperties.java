@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "ords")
 @Data
 public class OrdsProperties implements OrdsPropertiesInterface {
-    private String cmsIntUsername;
-    private String cmsIntPassword;
-    private String cmsUsername;
-    private String cmsPassword;
+    private String username;
+    private String password;
     private String cmsIntOrdsUrl = "http://test.com/cmsint/";
     private String cmsOrdsUrl = "http://test.com/cms/";
     private String eventsEndpoint;

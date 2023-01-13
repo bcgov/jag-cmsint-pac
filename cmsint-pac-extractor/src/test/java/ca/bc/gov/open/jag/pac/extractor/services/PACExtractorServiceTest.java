@@ -121,10 +121,8 @@ public class PACExtractorServiceTest {
                         mockRabbitTemplate,
                         mockedAmqpAdmin,
                         null);
-        when(mockOrdsProperties.getCmsIntUsername()).thenReturn(testString);
-        when(mockOrdsProperties.getCmsIntPassword()).thenReturn(testString);
-        when(mockOrdsProperties.getCmsUsername()).thenReturn(testString);
-        when(mockOrdsProperties.getCmsPassword()).thenReturn(testString);
+        when(mockOrdsProperties.getUsername()).thenReturn(testString);
+        when(mockOrdsProperties.getPassword()).thenReturn(testString);
         when(mockOrdsProperties.getCmsIntBaseUrl()).thenReturn(testUrl);
         when(mockOrdsProperties.getCmsBaseUrl()).thenReturn(testUrl);
         when(mockOrdsProperties.getEventsEndpoint()).thenReturn(testEndpoint);

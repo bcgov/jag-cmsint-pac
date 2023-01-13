@@ -1,5 +1,6 @@
 package ca.bc.gov.open.jag.pac.extractor.config;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -14,6 +15,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RabbitMqConfig {
+    @Value("${ords.username}")
+    private String username;
+
+    @Value("${ords.password}")
+    private String password;
 
     private final QueueConfig queueConfig;
 
@@ -21,10 +27,10 @@ public class RabbitMqConfig {
     private String rabbitHost;
 
     @Value("${spring.rabbitmq.username}")
-    private String username;
+    private String ordsUsername;
 
     @Value("${spring.rabbitmq.password}")
-    private String password;
+    private String ordsPassword;
 
     @Autowired
     public RabbitMqConfig(QueueConfig queueConfig) {
@@ -33,7 +39,18 @@ public class RabbitMqConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate
+                .getInterceptors()
+                .add(
+                        (request, body, execution) -> {
+                            String auth = ordsUsername + ":" + ordsPassword;
+                            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes());
+                            request.getHeaders()
+                                    .add("Authorization", "Basic " + new String(encodedAuth));
+                            return execution.execute(request, body);
+                        });
+        return restTemplate;
     }
 
     @Bean(name = "pac-queue")

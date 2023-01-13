@@ -40,12 +40,10 @@ For exact values of secrets not specified here, refer to the secrets for the Dev
 | PAC_QUEUE_NAME                   |                                               pac-queue |
 | PAC_ROUTING_KEY                  |                                                     PAC |
 | RABBIT_EXCHANGE_NAME             |                                                EXCHANGE |
-| CMSINT_ORDS_USERNAME             |                                                    user |
-| CMSINT_ORDS_PASSWORD             |                                   super-secret-password |
 | CMSINT_ORDS_HOST                 | http://example.com/ - make sure to include a trailing / |
-| CMS_ORDS_USERNAME                |                                                    user |
-| CMS_ORDS_PASSWORD                |                                   super-secret-password |
 | CMS_ORDS_HOST                    | http://example.com/ - make sure to include a trailing / |
+| ORDS_USERNAME                    |                                                    user |
+| ORDS_PASSWORD                    |                                   super-secret-password |
 | RABBIT_MQ_HOST                   |               http://ecample.com - no trailing / needed |
 | RABBIT_MQ_USERNAME               |                                                username |
 | RABBIT_MQ_PASSWORD               |                                   super-secret-password |

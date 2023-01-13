@@ -88,26 +88,16 @@ objects:
                     secretKeyRef:
                       name: ${COMPONENT_NAME}
                       key: CMS_ORDS_HOST
-                - name: CMSINT_ORDS_USERNAME
+                - name: ORDS_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: ${COMPONENT_NAME}
-                      key: CMSINT_ORDS_USERNAME
-                - name: CMSINT_ORDS_PASSWORD
+                      key: ORDS_USERNAME
+                - name: ORDS_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: ${COMPONENT_NAME}
-                      key: CMSINT_ORDS_PASSWORD
-                - name: CMS_ORDS_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${COMPONENT_NAME}
-                      key: CMS_ORDS_USERNAME
-                - name: CMS_ORDS_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${COMPONENT_NAME}
-                      key: CMS_ORDS_PASSWORD
+                      key: ORDS_PASSWORD
                 - name: PAC_QUEUE_NAME
                   valueFrom:
                     secretKeyRef:
