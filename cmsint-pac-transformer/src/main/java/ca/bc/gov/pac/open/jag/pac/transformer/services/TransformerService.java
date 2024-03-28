@@ -1,11 +1,13 @@
 package ca.bc.gov.pac.open.jag.pac.transformer.services;
 
 import ca.bc.gov.open.pac.models.Client;
+import ca.bc.gov.open.pac.models.ClientDto;
 import ca.bc.gov.open.pac.models.dateFormatters.DateFormatEnum;
 import ca.bc.gov.open.pac.models.dateFormatters.DateFormatterInterface;
 import ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.OrdsProperties;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.PacProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +37,10 @@ public class TransformerService {
     }
 
     // PACUpdate BPM
-    public void processPAC(final Client client) {
+    public void processPAC(final ClientDto clientDto) {
         try {
+
+            Client client = clientDto.toClient();
             if (!(client.getStatus() instanceof PendingEventStatus)) {
                 sendToQueue(client);
                 return;
@@ -59,6 +63,7 @@ public class TransformerService {
             sendToQueue(clientWithUpdatedDates);
 
         } catch (Exception ex) {
+            Client client = clientDto.toClient();
             client.getStatus()
                     .setRestTemplate(restTemplate)
                     .setOrdsProperties(ordsProperties)
@@ -68,9 +73,8 @@ public class TransformerService {
         }
     }
 
-    public void sendToQueue(Client client) {
-
+    public void sendToQueue(Client client) throws JsonProcessingException {
         this.rabbitTemplate.convertAndSend(
-                pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client);
+                pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client.Dto());
     }
 }

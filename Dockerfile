@@ -1,7 +1,7 @@
 ##############################################################################################
 #### Stage where the maven dependencies are cached                                         ###
 ##############################################################################################
-FROM maven:3.8-eclipse-temurin-11 as dependencies-cache
+FROM maven:3.8-eclipse-temurin-17 as dependencies-cache
 
 ARG MVN_PROFILE
 
@@ -44,9 +44,9 @@ RUN  mvn clean package \
 ##############################################################################################
 #### Stage where Docker is running a java process to run a service built in previous stage ###
 ##############################################################################################
-FROM eclipse-temurin:11-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 
-RUN apk upgrade expat  # Fix for CVE-2022-43680
+RUN apk upgrade libexpat  # Fix for CVE-2022-43680
 
 ARG MVN_PROFILE
 

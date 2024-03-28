@@ -3,8 +3,11 @@ package ca.bc.gov.open.jag.pac.loader.service;
 import ca.bc.gov.open.jag.pac.loader.config.OrdsProperties;
 import ca.bc.gov.open.jag.pac.loader.config.PacProperties;
 import ca.bc.gov.open.pac.models.Client;
+import ca.bc.gov.open.pac.models.ClientDto;
 import ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus;
 import java.util.Arrays;
+
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 
 @Service
 @Slf4j
+@Data
 public class LoaderService {
 
     private final WebServiceTemplate webServiceTemplate;
@@ -34,7 +38,8 @@ public class LoaderService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void processPAC(Client client) {
+    public void processPAC(ClientDto clientDto) {
+        Client client = clientDto.toClient();
         var status = client.getStatus().getClass();
         var statesThatShouldNotBeProcessed = Arrays.asList(PendingEventStatus.class);
         if (statesThatShouldNotBeProcessed.contains(status)) {
@@ -51,6 +56,13 @@ public class LoaderService {
 
     public void sendToQueue(Client client) {
         this.rabbitTemplate.convertAndSend(
-                pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client);
+                pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client.Dto());
+    }
+
+    public void updateToConnectionError(Client client) {
+        client.getStatus()
+                .setRestTemplate(getRestTemplate())
+                .setOrdsProperties(getOrdsProperties())
+                .updateToConnectionError(client);
     }
 }

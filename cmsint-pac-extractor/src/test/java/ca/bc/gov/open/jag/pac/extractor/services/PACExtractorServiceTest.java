@@ -19,6 +19,7 @@ import ca.bc.gov.open.pac.models.ords.ProcessEntity;
 import ca.bc.gov.open.pac.models.ords.UpdateEntryEntity;
 import java.net.URI;
 import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -176,7 +177,7 @@ public class PACExtractorServiceTest {
     }
 
     @Test
-    void pollOrdsForNewRecordsBringsZeroNewRecords(CapturedOutput output) {
+    void pollOrdsForNewRecordsBringsZeroNewRecords(CapturedOutput output) throws JsonProcessingException {
         ResponseEntity<ProcessEntity[]> responseEntity =
                 new ResponseEntity<>(new ProcessEntity[0], HttpStatus.OK);
 
@@ -188,7 +189,7 @@ public class PACExtractorServiceTest {
     }
 
     @Test
-    void pollOrdsForNewRecordsFailsDuringRequest(CapturedOutput output) {
+    void pollOrdsForNewRecordsFailsDuringRequest(CapturedOutput output) throws JsonProcessingException {
         when(mockRestTemplateCMSInt.getForObject(any(URI.class), eq(ProcessEntity[].class)))
                 .thenThrow(new RuntimeException("testing exception"));
 

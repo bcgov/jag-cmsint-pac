@@ -1,6 +1,7 @@
 package ca.bc.gov.open.jag.pac.loader.service;
 
 import ca.bc.gov.open.pac.models.Client;
+import ca.bc.gov.open.pac.models.ClientDto;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,18 @@ public class QueueListenerService {
     }
 
     @RabbitListener(queues = "${pac.pac-queue}")
-    public void receivePACMessage(@Payload Message<Client> message) throws IOException {
-        Client client = message.getPayload();
+    public void receivePACMessage(@Payload Message<ClientDto> message) throws IOException {
+        ClientDto clientDto = message.getPayload();
         try {
-            loaderService.processPAC(client);
+            loaderService.processPAC(clientDto);
         } catch (ORDSException ex) {
+            Client client = clientDto.toClient();
             log.error("PAC BPM ERROR: " + message + " not processed successfully");
-            client.getStatus().updateToConnectionError(client);
+            loaderService.updateToConnectionError(client);
         } catch (Exception ignored) {
+            Client client = clientDto.toClient();
             log.error("PAC BPM ERROR: " + message + " not processed successfully");
-            client.getStatus().updateToApplicationError(client);
+            loaderService.updateToConnectionError(client);
         }
     }
 }

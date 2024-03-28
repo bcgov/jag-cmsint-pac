@@ -1,8 +1,8 @@
 package ca.bc.gov.open.pac.models;
 
+import ca.bc.gov.open.pac.models.ClientDto.EventState;
 import ca.bc.gov.open.pac.models.dateFormatters.DateFormatterInterface;
-import ca.bc.gov.open.pac.models.eventStatus.EventStatus;
-import ca.bc.gov.open.pac.models.eventStatus.NewEventStatus;
+import ca.bc.gov.open.pac.models.eventStatus.*;
 import ca.bc.gov.open.pac.models.ords.DemographicsEntity;
 import ca.bc.gov.open.pac.models.ords.EventEntity;
 import ca.bc.gov.open.pac.models.ords.ProcessEntity;
@@ -49,6 +49,35 @@ public class Client implements Serializable {
         demographicInfo = new DemographicInfo(demographicsEntity);
     }
 
+    public Client(ClientDto clientDto) {
+        clientNumber = clientDto.getClientNumber();
+        eventSeqNum = clientDto.getEventSeqNum();
+        computerSystemCd = clientDto.getComputerSystemCd();
+        EventState eventState = clientDto.getEventState();
+        switch(eventState) {
+            case CompletedDuplicate:
+                this.status = new CompletedDuplicateEventStatus(null, null);
+                break;
+            case ConnectionError:
+                this.status = new ConnectionErrorEventStatus(null, null);
+                break;
+            case InProgress:
+                this.status = new InProgressEventStatus(null, null);
+                break;
+            case New:
+                this.status = new NewEventStatus(null, null);
+                break;
+            case Pending:
+                this.status = new PendingEventStatus(null, null);
+                break;
+            default:
+                this.status = new ApplicationErrorEventStatus(null, null);
+                break;
+        }
+        eventTypeCode = clientDto.getEventTypeCode();
+        demographicInfo = clientDto.getDemographicInfo();
+    }
+
     public Client(Client client, DemographicInfo demographicInfo) {
         this.clientNumber = client.getClientNumber();
         this.eventSeqNum = client.getEventSeqNum();
@@ -72,5 +101,9 @@ public class Client implements Serializable {
     public Client updateSysDateFormat(DateFormatterInterface dateFormatter) {
         var updatedDemographicInfo = demographicInfo.updateSysDateFormat(dateFormatter);
         return new Client(this, updatedDemographicInfo);
+    }
+
+    public ClientDto Dto() {
+        return new ClientDto(this);
     }
 }

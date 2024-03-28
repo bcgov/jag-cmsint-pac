@@ -1,6 +1,6 @@
 package ca.bc.gov.pac.open.jag.pac.transformer.services;
 
-import ca.bc.gov.open.pac.models.Client;
+import ca.bc.gov.open.pac.models.ClientDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,8 @@ public class QueueListenerService {
     }
 
     @RabbitListener(queues = "${pac.pac-queue}")
-    public void receivePACMessage(@Payload Message<Client> message) throws IOException {
-        Client client = message.getPayload();
-        transformerService.processPAC(client);
+    public void receivePACMessage(@Payload Message<ClientDto> message) throws IOException {
+        ClientDto clientDto = message.getPayload();
+        transformerService.processPAC(clientDto);
     }
 }
