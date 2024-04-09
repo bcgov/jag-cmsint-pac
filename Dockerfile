@@ -48,6 +48,10 @@ FROM eclipse-temurin:17-jre-alpine
 
 RUN apk upgrade libexpat  # Fix for CVE-2022-43680
 
+RUN apk upgrade libssl3
+
+RUN apk upgrade libcrypto3
+
 ARG MVN_PROFILE
 
 COPY --from=build /build/${MVN_PROFILE}/target/${MVN_PROFILE}*.jar /app/application.jar
