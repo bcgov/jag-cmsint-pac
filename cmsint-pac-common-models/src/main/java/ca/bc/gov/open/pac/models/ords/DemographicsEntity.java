@@ -74,4 +74,7 @@ public class DemographicsEntity extends BaseEntity {
 
     @JsonProperty("custodyCenter")
     private String custodyCenter;
+
+    @JsonProperty("nextCourtDt")
+    private String nextCourtDt;
 }

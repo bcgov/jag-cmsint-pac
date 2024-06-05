@@ -103,6 +103,11 @@ public class Client implements Serializable {
         return new Client(this, updatedDemographicInfo);
     }
 
+    public Client updateNextCourtDtFormat(DateFormatterInterface dateFormatter) {
+        var updatedDemographicInfo = demographicInfo.updateNextCourtDtFormat(dateFormatter);
+        return new Client(this, updatedDemographicInfo);
+    }
+
     public ClientDto Dto() {
         return new ClientDto(this);
     }

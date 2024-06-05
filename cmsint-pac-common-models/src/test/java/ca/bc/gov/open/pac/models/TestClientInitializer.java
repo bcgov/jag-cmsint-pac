@@ -28,6 +28,7 @@ public class TestClientInitializer {
     private static final String isIn = "isIn";
     private static final String custodyCenter = "custodyCenter";
     private static final String livingUnit = "livingUnit";
+    private static final String nextCourtDt = "nextCourtDt";
 
     public static Client getClientInstance() {
         return new Client(getProcessInstance(), getEventEntity());
@@ -67,6 +68,7 @@ public class TestClientInitializer {
                 sysDate,
                 pacLocationCd,
                 userId,
-                custodyCenter);
+                custodyCenter,
+                nextCourtDt);
     }
 }

@@ -88,6 +88,9 @@ class ClientTest {
         assertEquals(
                 expectedClient.getDemographicInfo().getPacLocationCd(),
                 actualDemographics.getPacLocationCd());
+        assertEquals(
+                expectedClient.getDemographicInfo().getNextCourtDt(),
+                actualDemographics.getNextCourtDt());
     }
 
     private void clientRelatedAssertions(Client expectedClient) {

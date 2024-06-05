@@ -53,7 +53,8 @@ public class TransformerService {
             var clientWithUpdatedDates =
                     client.updateBirthDateFormat(dateFormatter)
                             .updateProbableDischargeDateDateFormat(dateFormatter)
-                            .updateSysDateFormat(dateFormatter);
+                            .updateSysDateFormat(dateFormatter)
+                            .updateNextCourtDtFormat(dateFormatter);
 
             clientWithUpdatedDates
                     .getStatus()

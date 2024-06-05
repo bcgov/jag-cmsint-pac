@@ -80,6 +80,7 @@ public class PACExtractorServiceTest {
     private final String isIn = "isIn";
     private final String custodyCenter = "custodyCenter";
     private final String livingUnit = "livingUnit";
+    private final String nextCourtDt = "nextCourtDt";
     private final Client mockedClient =
             new Client(
                     new ProcessEntity(clientNumber, eventSeqNumber, computerSystemCd),
@@ -109,7 +110,8 @@ public class PACExtractorServiceTest {
                     sysDate,
                     "avLocaCd",
                     "avClientLocaUserId",
-                    "vLocaCdAlternate");
+                    "vLocaCdAlternate",
+                    nextCourtDt);
 
     @BeforeEach
     void beforeEachSetup() {

@@ -32,6 +32,7 @@ public class DemographicInfo implements Serializable {
     private final String birthDate;
     private final String probableDischargeDate;
     private final String sysDate;
+    private final String nextCourtDt;
 
     public DemographicInfo(DemographicsEntity demographicsEntity) {
         csNum = demographicsEntity.getCsNum();
@@ -53,6 +54,7 @@ public class DemographicInfo implements Serializable {
         userId = demographicsEntity.getUserId();
         pacLocationCd = demographicsEntity.getPacLocationCd();
         custodyCenter = demographicsEntity.getCustodyCenter();
+        nextCourtDt = demographicsEntity.getNextCourtDt();
     }
 
     public DemographicInfo() {
@@ -75,6 +77,7 @@ public class DemographicInfo implements Serializable {
         pacLocationCd = null;
         userId = null;
         custodyCenter = null;
+        nextCourtDt = null;
     }
 
     public DemographicInfo updateBirthDateFormat(DateFormatterInterface dateFormatter) {
@@ -98,7 +101,8 @@ public class DemographicInfo implements Serializable {
                 livingUnit,
                 updateBirthDate,
                 probableDischargeDate,
-                sysDate);
+                sysDate,
+                nextCourtDt);
     }
 
     public DemographicInfo updateProbableDischargeDateDateFormat(
@@ -123,7 +127,8 @@ public class DemographicInfo implements Serializable {
                 livingUnit,
                 birthDate,
                 updateProbableDischargeDate,
-                sysDate);
+                sysDate,
+                nextCourtDt);
     }
 
     public DemographicInfo updateSysDateFormat(DateFormatterInterface dateFormatter) {
@@ -147,6 +152,32 @@ public class DemographicInfo implements Serializable {
                 livingUnit,
                 birthDate,
                 probableDischargeDate,
-                updateSysDate);
+                updateSysDate,
+                nextCourtDt);
+    }
+
+    public DemographicInfo updateNextCourtDtFormat(DateFormatterInterface dateFormatter) {
+        var updateNextCourtDt = dateFormatter.format(nextCourtDt);
+        return new DemographicInfo(
+                csNum,
+                surname,
+                givenName1,
+                givenName2,
+                gender,
+                photoGUID,
+                pacLocationCd,
+                outReason,
+                isActive,
+                fromCsNum,
+                userId,
+                mergeUserId,
+                icsLocationCd,
+                isIn,
+                custodyCenter,
+                livingUnit,
+                birthDate,
+                probableDischargeDate,
+                sysDate,
+                updateNextCourtDt);
     }
 }
