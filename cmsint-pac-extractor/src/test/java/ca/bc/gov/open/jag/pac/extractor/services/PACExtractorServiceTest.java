@@ -20,6 +20,7 @@ import ca.bc.gov.open.pac.models.ords.UpdateEntryEntity;
 import java.net.URI;
 import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,7 @@ public class PACExtractorServiceTest {
 
     @Mock private OrdsProperties mockOrdsProperties;
     @Mock private PACExtractorService mockPacExtractorService;
+    @Mock private ObjectMapper objectMapper;
 
     private static PACExtractorService pacExtractorService;
     private ProcessEntity genericProcessEntity;
@@ -127,7 +130,8 @@ public class PACExtractorServiceTest {
                         mockRestTemplateCMS,
                         mockRabbitTemplate,
                         mockedAmqpAdmin,
-                        null);
+                        null,
+                        objectMapper);
         when(mockOrdsProperties.getCmsIntUsername()).thenReturn(testString);
         when(mockOrdsProperties.getCmsIntPassword()).thenReturn(testString);
         when(mockOrdsProperties.getCmsUsername()).thenReturn(testString);

@@ -7,6 +7,8 @@ import ca.bc.gov.open.pac.models.ClientDto;
 import ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus;
 import java.util.Arrays;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -25,20 +27,24 @@ public class LoaderService {
     private final OrdsProperties ordsProperties;
     private final AmqpTemplate rabbitTemplate;
 
+    private ObjectMapper objectMapper;
+
     public LoaderService(
             WebServiceTemplate webServiceTemplate,
             RestTemplate restTemplate,
             OrdsProperties ordsProperties,
             PacProperties pacProperties,
-            AmqpTemplate rabbitTemplate) {
+            AmqpTemplate rabbitTemplate,
+            ObjectMapper objectMapper) {
         this.webServiceTemplate = webServiceTemplate;
         this.restTemplate = restTemplate;
         this.ordsProperties = ordsProperties;
         this.pacProperties = pacProperties;
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    public void processPAC(ClientDto clientDto) {
+    public void processPAC(ClientDto clientDto) throws JsonProcessingException {
         Client client = clientDto.toClient();
         var status = client.getStatus().getClass();
         var statesThatShouldNotBeProcessed = Arrays.asList(PendingEventStatus.class);
@@ -54,7 +60,10 @@ public class LoaderService {
                 .process(client);
     }
 
-    public void sendToQueue(Client client) {
+    public void sendToQueue(Client client) throws JsonProcessingException {
+        // TODO:
+        log.info(" sendToQueue: " + objectMapper.writeValueAsString(client.Dto()));
+
         this.rabbitTemplate.convertAndSend(
                 pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client.Dto());
     }

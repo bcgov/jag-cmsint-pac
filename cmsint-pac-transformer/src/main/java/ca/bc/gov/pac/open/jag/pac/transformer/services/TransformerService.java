@@ -8,6 +8,7 @@ import ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.OrdsProperties;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.PacProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +24,29 @@ public class TransformerService {
     private final PacProperties pacProperties;
     private final RabbitTemplate rabbitTemplate;
 
+    private ObjectMapper objectMapper;
+
     @Autowired
     public TransformerService(
             RestTemplate restTemplate,
             OrdsProperties ordsProperties,
             PacProperties pacProperties,
-            RabbitTemplate rabbitTemplate) {
+            RabbitTemplate rabbitTemplate,
+            ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.ordsProperties = ordsProperties;
         this.pacProperties = pacProperties;
 
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
     }
 
     // PACUpdate BPM
     public void processPAC(final ClientDto clientDto) {
         try {
+
+            // TODO:
+            log.info(" processPAC clientDto: " + objectMapper.writeValueAsString(clientDto));
 
             Client client = clientDto.toClient();
             if (!(client.getStatus() instanceof PendingEventStatus)) {
@@ -55,6 +63,8 @@ public class TransformerService {
                             .updateProbableDischargeDateDateFormat(dateFormatter)
                             .updateSysDateFormat(dateFormatter)
                             .updateNextCourtDtFormat(dateFormatter);
+            // TODO:
+            log.info(" processPAC clientWithUpdatedDates: " + objectMapper.writeValueAsString(clientWithUpdatedDates.Dto()));
 
             clientWithUpdatedDates
                     .getStatus()
@@ -75,6 +85,10 @@ public class TransformerService {
     }
 
     public void sendToQueue(Client client) throws JsonProcessingException {
+
+        // TODO:
+        log.info(" sendToQueue sendToQueue: " + objectMapper.writeValueAsString(client.Dto()));
+
         this.rabbitTemplate.convertAndSend(
                 pacProperties.getExchangeName(), pacProperties.getPacRoutingKey(), client.Dto());
     }

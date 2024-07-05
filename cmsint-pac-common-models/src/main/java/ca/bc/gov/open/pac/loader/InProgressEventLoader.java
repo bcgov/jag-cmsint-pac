@@ -3,6 +3,7 @@ package ca.bc.gov.open.pac.loader;
 import ca.bc.gov.open.pac.models.*;
 import ca.bc.gov.open.pac.models.eventTypeCode.EventTypeEnum;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.health.phis.ws.SynchronizeClient;
 import com.health.phis.ws.SynchronizeClientResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ public class InProgressEventLoader implements EventLoader {
     private final WebServiceTemplate webServiceTemplate;
     private final LoaderPacPropertiesInterface pacProperties;
 
+    private ObjectMapper objectMapper;
+
     public InProgressEventLoader(
             WebServiceTemplate webServiceTemplate, LoaderPacPropertiesInterface pacProperties) {
         this.pacProperties = pacProperties;
@@ -24,6 +27,10 @@ public class InProgressEventLoader implements EventLoader {
         // Invoke Soap Service
         try {
             log.info("Client to SOAP Service: " + synchronizeClient.toString());
+
+            // TODO
+            log.info("invokeSoapService getCsNumber(): " + synchronizeClient.getCsNumber());
+            log.info("invokeSoapService getNextCourtDt(): " + synchronizeClient.getNextCourtDt());
 
             SynchronizeClientResponse synchronizeClientResponse =
                     (SynchronizeClientResponse)
@@ -54,6 +61,9 @@ public class InProgressEventLoader implements EventLoader {
     @Override
     public void process(Client client) {
         var SynchronizeClient = getSynchronizeClientEntity(client);
+        //TODO
+        log.info("process(Client client) client.getClientNumber(): " + client.getClientNumber());
+        log.info("process(Client client) client.getEventTypeCode(): " + client.getEventTypeCode());
         invokeSoapService(SynchronizeClient);
         client.getStatus().updateToCompletedOk(client);
     }
