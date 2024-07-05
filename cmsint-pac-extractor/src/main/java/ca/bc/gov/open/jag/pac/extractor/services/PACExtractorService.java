@@ -3,7 +3,6 @@ package ca.bc.gov.open.jag.pac.extractor.services;
 import ca.bc.gov.open.jag.pac.extractor.config.OrdsProperties;
 import ca.bc.gov.open.jag.pac.extractor.config.QueueConfig;
 import ca.bc.gov.open.pac.models.Client;
-import ca.bc.gov.open.pac.models.ClientDto;
 import ca.bc.gov.open.pac.models.OrdsErrorLog;
 import ca.bc.gov.open.pac.models.RequestSuccessLog;
 import ca.bc.gov.open.pac.models.eventStatus.CompletedDuplicateEventStatus;
@@ -16,6 +15,9 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -45,6 +47,8 @@ public class PACExtractorService {
 
     private final QueueConfig queueConfig;
 
+    private final ObjectMapper objectMapper;
+
     public PACExtractorService(
             OrdsProperties ordsProperties,
             @Qualifier("pac-queue") Queue pacQueue,
@@ -52,7 +56,8 @@ public class PACExtractorService {
             @Qualifier("restTemplateCMS") RestTemplate restTemplateCMS,
             RabbitTemplate rabbitTemplate,
             AmqpAdmin amqpAdmin,
-            QueueConfig queueConfig) {
+            QueueConfig queueConfig,
+            ObjectMapper objectMapper) {
         this.ordsProperties = ordsProperties;
         this.pacQueue = pacQueue;
         this.restTemplateCMSInt = restTemplateCMSInt;
@@ -60,6 +65,7 @@ public class PACExtractorService {
         this.rabbitTemplate = rabbitTemplate;
         this.amqpAdmin = amqpAdmin;
         this.queueConfig = queueConfig;
+        this.objectMapper = objectMapper;
     }
 
     private static class QueryParam {
@@ -84,19 +90,21 @@ public class PACExtractorService {
             List<ProcessEntity> processesEntity = getNewProcesses(); // cmsintords/pac/v1/processes
             log.info("Pulled " + processesEntity.size() + " new records");
 
-            processesEntity.stream()
-                    .map(this::getEventForProcess) // cmsintords/pac/v1/events
-                    .map(
-                            client ->
-                                    client.getStatus()
-                                            .updateToPending(client)) // cmsords/pac/v1/entries
-                    .map(this::getClientNewerSequence) // cmsords/pac/v1/events
-                    .filter(
-                            client ->
-                                    client.getStatus().getClass()
-                                            != CompletedDuplicateEventStatus.class)
-                    .map(this::getDemographicsInfo) // cmsords/pac/v1/demographics
-                    .forEach(this::sendToRabbitMq);
+            // cmsintords/pac/v1/events
+            // cmsords/pac/v1/entries
+            // cmsords/pac/v1/events
+            // cmsords/pac/v1/demographics
+            for (ProcessEntity processEntity : processesEntity) {
+                Client client = getEventForProcess(processEntity);
+                Client updateToPending = client.getStatus()
+                        .updateToPending(client);
+                Client clientNewerSequence = getClientNewerSequence(updateToPending);
+                if (clientNewerSequence.getStatus().getClass()
+                        != CompletedDuplicateEventStatus.class) {
+                    Client demographicsInfo = getDemographicsInfo(clientNewerSequence);
+                    sendToRabbitMq(demographicsInfo);
+                }
+            }
         } catch (Exception ex) {
             log.error("Failed to pull new records from the db: " + ex.getMessage());
         }
@@ -117,6 +125,8 @@ public class PACExtractorService {
                 throw new NullPointerException(
                         "Response object from " + url.getPath() + " is null");
             }
+            // TODO:
+            log.info("TODO: getDemographicsInfo: " + objectMapper.writeValueAsString(demographicsEntity));
             return new Client(client, demographicsEntity);
         } catch (Exception ex) {
             logError(url.getPath(), ex, null);
@@ -197,7 +207,7 @@ public class PACExtractorService {
         log.error(ordsErrormessage);
     }
 
-    public void sendToRabbitMq(Client client) {
+    public void sendToRabbitMq(Client client) throws JsonProcessingException {
         if (client != null) {
             this.rabbitTemplate.convertAndSend(
                     queueConfig.getTopicExchangeName(), queueConfig.getPacRoutingkey(), client.Dto());
@@ -208,6 +218,8 @@ public class PACExtractorService {
                             + client.getEventTypeCode()
                             + " SeqNum:"
                             + client.getEventSeqNum());
+            // TODO:
+            log.info("TODO: getDemographicsInfo: " + objectMapper.writeValueAsString(client.Dto()));
         }
     }
 
