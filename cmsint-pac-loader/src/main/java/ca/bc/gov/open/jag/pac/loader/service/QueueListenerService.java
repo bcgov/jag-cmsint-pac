@@ -28,7 +28,7 @@ public class QueueListenerService {
         } catch (ORDSException ex) {
             Client client = clientDto.toClient();
             log.error("PAC BPM ERROR: " + message + " not processed successfully");
-            loaderService.updateToConnectionError(client);
+            loaderService.updateToApplicationError(client);
         } catch (Exception ignored) {
             Client client = clientDto.toClient();
             log.error("PAC BPM ERROR: " + message + " not processed successfully");

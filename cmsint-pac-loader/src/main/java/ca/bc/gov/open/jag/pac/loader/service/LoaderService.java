@@ -65,4 +65,12 @@ public class LoaderService {
                 .setOrdsProperties(getOrdsProperties())
                 .updateToConnectionError(client);
     }
+
+    public void updateToApplicationError(Client client) {
+        client.getStatus()
+                .setRestTemplate(getRestTemplate())
+                .setOrdsProperties(getOrdsProperties())
+                .updateToApplicationError(client);
+    }
+
 }
