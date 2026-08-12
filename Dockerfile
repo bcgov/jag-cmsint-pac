@@ -46,7 +46,7 @@ RUN  mvn clean package \
 ##############################################################################################
 FROM eclipse-temurin:17-jre-alpine
 
-RUN apk update && apk add --upgrade --no-cache libexpat # fix CVE-2024-8176
+RUN apk upgrade --no-cache
 
 ARG MVN_PROFILE
 
