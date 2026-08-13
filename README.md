@@ -29,6 +29,13 @@ To run tests, use
 mvn clean verify
 ```
 
+
+### Set project version using maven
+
+```
+mvn versions:set -DartifactId=*  -DgroupId=*
+```
+
 ## Environment Variables
 
 For exact values of secrets not specified here, refer to the secrets for the Dev environment in OpenShift.
