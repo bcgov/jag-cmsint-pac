@@ -8,15 +8,16 @@ import ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.OrdsProperties;
 import ca.bc.gov.pac.open.jag.pac.transformer.configurations.PacProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Slf4j
 public class TransformerService {
+    private static final Logger log = LoggerFactory.getLogger(TransformerService.class);
 
     private final RestTemplate restTemplate;
     private final OrdsProperties ordsProperties;

@@ -1,11 +1,9 @@
 package ca.bc.gov.pac.open.jag.pac.transformer.configurations;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Getter
 public class QueueConfig {
 
     @Value("${pac.exchange-name}")
@@ -16,4 +14,16 @@ public class QueueConfig {
 
     @Value("${pac.pac-routing-key}")
     private String pacRoutingkey;
+
+    public String getTopicExchangeName() {
+        return topicExchangeName;
+    }
+
+    public String getPacQueueName() {
+        return pacQueueName;
+    }
+
+    public String getPacRoutingkey() {
+        return pacRoutingkey;
+    }
 }

@@ -1,7 +1,6 @@
 package ca.bc.gov.open.pac.models.serializers;
 
 import static ca.bc.gov.open.pac.models.serializers.DateParser.parseDateToInstant;
-
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -9,10 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.TimeZone;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public final class InstantSoapConverter {
+    private static final Logger log = LoggerFactory.getLogger(InstantSoapConverter.class);
 
     private static final String timezoneString = "GMT-7";
     private static final TimeZone timezone = TimeZone.getTimeZone(timezoneString);
