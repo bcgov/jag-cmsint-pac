@@ -11,13 +11,12 @@ import ca.bc.gov.open.pac.models.ords.DemographicsEntity;
 import ca.bc.gov.open.pac.models.ords.EventEntity;
 import ca.bc.gov.open.pac.models.ords.NewerEventEntity;
 import ca.bc.gov.open.pac.models.ords.ProcessEntity;
-import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -28,8 +27,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
+@Slf4j
 public class PACExtractorService {
-    private static final Logger log = LoggerFactory.getLogger(PACExtractorService.class);
 
     private final OrdsProperties ordsProperties;
 

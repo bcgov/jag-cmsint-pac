@@ -3,7 +3,9 @@ package ca.bc.gov.open.pac.models.ords;
 import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.eventStatus.EventStatusCode;
 import java.io.Serializable;
+import lombok.Getter;
 
+@Getter
 public class UpdateEntryEntity implements Serializable {
     private final String clientNumber;
     private final String eventSeqNum;
@@ -15,21 +17,5 @@ public class UpdateEntryEntity implements Serializable {
         eventSeqNum = client.getEventSeqNum();
         computerSystemCd = client.getComputerSystemCd();
         eventTypeCode = eventStatusCode.getCode();
-    }
-
-    public String getClientNumber() {
-        return clientNumber;
-    }
-
-    public String getEventSeqNum() {
-        return eventSeqNum;
-    }
-
-    public String getComputerSystemCd() {
-        return computerSystemCd;
-    }
-
-    public String getEventTypeCode() {
-        return eventTypeCode;
     }
 }

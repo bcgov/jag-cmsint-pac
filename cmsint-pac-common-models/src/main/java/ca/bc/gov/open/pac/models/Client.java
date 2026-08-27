@@ -7,9 +7,12 @@ import ca.bc.gov.open.pac.models.ords.DemographicsEntity;
 import ca.bc.gov.open.pac.models.ords.EventEntity;
 import ca.bc.gov.open.pac.models.ords.ProcessEntity;
 import java.io.Serializable;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.web.client.RestTemplate;
 
+@Data
+@AllArgsConstructor
 public class Client implements Serializable {
     private String clientNumber;
     private final String eventSeqNum;
@@ -17,21 +20,6 @@ public class Client implements Serializable {
     private final String computerSystemCd;
     private EventStatus status;
     private DemographicInfo demographicInfo;
-
-    public Client(
-            String clientNumber,
-            String eventSeqNum,
-            String eventTypeCode,
-            String computerSystemCd,
-            EventStatus status,
-            DemographicInfo demographicInfo) {
-        this.clientNumber = clientNumber;
-        this.eventSeqNum = eventSeqNum;
-        this.eventTypeCode = eventTypeCode;
-        this.computerSystemCd = computerSystemCd;
-        this.status = status;
-        this.demographicInfo = demographicInfo;
-    }
 
     public Client(ProcessEntity processEntity, EventEntity eventEntity) {
         clientNumber = processEntity.getClientNumber();
@@ -122,87 +110,5 @@ public class Client implements Serializable {
 
     public ClientDto Dto() {
         return new ClientDto(this);
-    }
-
-    public String getClientNumber() {
-        return clientNumber;
-    }
-
-    public void setClientNumber(String clientNumber) {
-        this.clientNumber = clientNumber;
-    }
-
-    public String getEventSeqNum() {
-        return eventSeqNum;
-    }
-
-    public String getEventTypeCode() {
-        return eventTypeCode;
-    }
-
-    public String getComputerSystemCd() {
-        return computerSystemCd;
-    }
-
-    public EventStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EventStatus status) {
-        this.status = status;
-    }
-
-    public DemographicInfo getDemographicInfo() {
-        return demographicInfo;
-    }
-
-    public void setDemographicInfo(DemographicInfo demographicInfo) {
-        this.demographicInfo = demographicInfo;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Client)) return false;
-        Client other = (Client) o;
-        return other.canEqual(this)
-                && Objects.equals(this.clientNumber, other.clientNumber)
-                && Objects.equals(this.eventSeqNum, other.eventSeqNum)
-                && Objects.equals(this.eventTypeCode, other.eventTypeCode)
-                && Objects.equals(this.computerSystemCd, other.computerSystemCd)
-                && Objects.equals(this.status, other.status)
-                && Objects.equals(this.demographicInfo, other.demographicInfo);
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof Client;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                clientNumber,
-                eventSeqNum,
-                eventTypeCode,
-                computerSystemCd,
-                status,
-                demographicInfo);
-    }
-
-    @Override
-    public String toString() {
-        return "Client(clientNumber="
-                + clientNumber
-                + ", eventSeqNum="
-                + eventSeqNum
-                + ", eventTypeCode="
-                + eventTypeCode
-                + ", computerSystemCd="
-                + computerSystemCd
-                + ", status="
-                + status
-                + ", demographicInfo="
-                + demographicInfo
-                + ")";
     }
 }

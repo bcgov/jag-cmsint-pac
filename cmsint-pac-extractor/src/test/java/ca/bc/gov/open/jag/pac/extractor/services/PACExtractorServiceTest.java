@@ -20,6 +20,7 @@ import ca.bc.gov.open.pac.models.ords.UpdateEntryEntity;
 import java.net.URI;
 import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -219,6 +220,7 @@ class PACExtractorServiceTest {
                 () -> pacExtractorService.getEventForProcess(genericProcessEntity));
     }
 
+    @SneakyThrows
     @ParameterizedTest
     @CsvSource(
             value = {
@@ -226,7 +228,7 @@ class PACExtractorServiceTest {
                 "false,ca.bc.gov.open.pac.models.eventStatus.PendingEventStatus"
             })
     void clientOnCorrectStateDependingOnIfItHasOrNotANewerEvent(
-            boolean hasNewerEvent, String eventStatusClassString) throws ClassNotFoundException {
+            boolean hasNewerEvent, String eventStatusClassString) {
 
         Class<?> eventStatusClass = Class.forName(eventStatusClassString);
         mockedClient.setStatus(new PendingEventStatus(mockOrdsProperties, mockRestTemplateCMS));

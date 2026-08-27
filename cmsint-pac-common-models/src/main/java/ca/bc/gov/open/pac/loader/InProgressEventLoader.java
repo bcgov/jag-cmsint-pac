@@ -4,12 +4,11 @@ import ca.bc.gov.open.pac.models.*;
 import ca.bc.gov.open.pac.models.eventTypeCode.EventTypeEnum;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
 import com.health.phis.ws.SynchronizeClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
+@Slf4j
 public class InProgressEventLoader implements EventLoader {
-    private static final Logger log = LoggerFactory.getLogger(InProgressEventLoader.class);
 
     private final WebServiceTemplate webServiceTemplate;
     private final LoaderPacPropertiesInterface pacProperties;

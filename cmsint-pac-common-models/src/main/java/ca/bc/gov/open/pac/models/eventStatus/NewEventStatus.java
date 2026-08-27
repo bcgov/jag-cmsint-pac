@@ -6,17 +6,16 @@ import ca.bc.gov.open.pac.models.Client;
 import ca.bc.gov.open.pac.models.LoaderPacPropertiesInterface;
 import ca.bc.gov.open.pac.models.OrdsPropertiesInterface;
 import java.io.Serializable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
+@NoArgsConstructor
+@Slf4j
 public class NewEventStatus extends EventStatus implements Serializable {
-    private static final Logger log = LoggerFactory.getLogger(NewEventStatus.class);
 
     public static final String METHOD_NAME = "updateToPending";
-
-    public NewEventStatus() {}
 
     public NewEventStatus(OrdsPropertiesInterface ordsProperties, RestTemplate restTemplate) {
         super(ordsProperties, restTemplate);

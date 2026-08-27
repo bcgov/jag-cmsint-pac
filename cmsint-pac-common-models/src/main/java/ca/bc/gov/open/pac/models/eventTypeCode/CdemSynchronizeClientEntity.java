@@ -3,8 +3,12 @@ package ca.bc.gov.open.pac.models.eventTypeCode;
 import ca.bc.gov.open.pac.models.Client;
 import com.health.phis.ws.SynchronizeClient;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @XmlRootElement
+@Data
+@NoArgsConstructor
 public class CdemSynchronizeClientEntity extends SynchronizeClient {
 
     public CdemSynchronizeClientEntity(Client client) {
@@ -18,29 +22,5 @@ public class CdemSynchronizeClientEntity extends SynchronizeClient {
         centre = client.getDemographicInfo().getCustodyCenter();
         livingUnit = client.getDemographicInfo().getLivingUnit();
         nextCourtDt = client.getDemographicInfo().getNextCourtDt();
-    }
-
-    public CdemSynchronizeClientEntity() {}
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof CdemSynchronizeClientEntity)) return false;
-        CdemSynchronizeClientEntity other = (CdemSynchronizeClientEntity) o;
-        return other.canEqual(this);
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof CdemSynchronizeClientEntity;
-    }
-
-    @Override
-    public int hashCode() {
-        return 1;
-    }
-
-    @Override
-    public String toString() {
-        return "CdemSynchronizeClientEntity()";
     }
 }
