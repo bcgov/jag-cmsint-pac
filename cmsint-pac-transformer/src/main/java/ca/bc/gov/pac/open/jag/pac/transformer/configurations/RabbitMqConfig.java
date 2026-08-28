@@ -7,7 +7,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,15 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     private final QueueConfig queueConfig;
-
-    @Value("${spring.rabbitmq.host}")
-    private String rabbitHost;
-
-    @Value("${spring.rabbitmq.username}")
-    private String username;
-
-    @Value("${spring.rabbitmq.password}")
-    private String password;
 
     @Autowired
     public RabbitMqConfig(QueueConfig queueConfig) {

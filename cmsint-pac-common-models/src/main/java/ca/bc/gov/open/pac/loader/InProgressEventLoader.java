@@ -4,7 +4,6 @@ import ca.bc.gov.open.pac.models.*;
 import ca.bc.gov.open.pac.models.eventTypeCode.EventTypeEnum;
 import ca.bc.gov.open.pac.models.exceptions.ORDSException;
 import com.health.phis.ws.SynchronizeClient;
-import com.health.phis.ws.SynchronizeClientResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
@@ -25,10 +24,8 @@ public class InProgressEventLoader implements EventLoader {
         try {
             log.info("Client to SOAP Service: " + synchronizeClient.toString());
 
-            SynchronizeClientResponse synchronizeClientResponse =
-                    (SynchronizeClientResponse)
-                            webServiceTemplate.marshalSendAndReceive(
-                                    pacProperties.getServiceUrl(), synchronizeClient);
+            webServiceTemplate.marshalSendAndReceive(
+                    pacProperties.getServiceUrl(), synchronizeClient);
             log.info(new RequestSuccessLog("Request Success", "synchronizeClient").toString());
         } catch (Exception ex) {
             log.error(

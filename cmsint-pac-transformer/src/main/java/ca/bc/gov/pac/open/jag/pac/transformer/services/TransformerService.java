@@ -69,7 +69,7 @@ public class TransformerService {
                     .setRestTemplate(restTemplate)
                     .setOrdsProperties(ordsProperties)
                     .updateToApplicationError(client);
-            log.error("PAC BPM ERROR: " + client + " not processed successfully");
+            log.error("PAC BPM ERROR: {} not processed successfully", client);
             log.error(ex.getMessage());
         }
     }

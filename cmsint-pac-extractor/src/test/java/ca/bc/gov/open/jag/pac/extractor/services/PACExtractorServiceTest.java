@@ -40,7 +40,7 @@ import org.springframework.web.client.RestTemplate;
 // @ExtendWith(MockitoExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
 @ActiveProfiles(value = "test")
-public class PACExtractorServiceTest {
+class PACExtractorServiceTest {
 
     private static final String testString = "test";
     private static final String testUrl = "http://example.com";
@@ -68,17 +68,13 @@ public class PACExtractorServiceTest {
     private final String gender = "gender";
     private final String photoGUID = "photoGUID";
     private final String probableDischargeDate = "probableDischargeDate";
-    private final String pacLocationCd = "pacLocationCd";
     private final String outReason = "outReason";
-    private final String computerSystemCd1 = "computerSystemCd";
     private final String isActive = "isActive";
     private final String sysDate = "sysDate";
     private final String fromCsNum = "fromCsNum";
-    private final String userId = "userId";
     private final String mergeUserId = "mergeUserId";
     private final String icsLocationCd = "icsLocationCd";
     private final String isIn = "isIn";
-    private final String custodyCenter = "custodyCenter";
     private final String livingUnit = "livingUnit";
 
     private final String nextCourtDt = "nextCourtDt";
@@ -182,8 +178,7 @@ public class PACExtractorServiceTest {
 
     @Test
     void pollOrdsForNewRecordsBringsZeroNewRecords(CapturedOutput output) throws JsonProcessingException {
-        ResponseEntity<ProcessEntity[]> responseEntity =
-                new ResponseEntity<>(new ProcessEntity[0], HttpStatus.OK);
+        new ResponseEntity<>(new ProcessEntity[0], HttpStatus.OK);
 
         when(mockRestTemplateCMSInt.getForObject(any(URI.class), eq(ProcessEntity[].class)))
                 .thenReturn(new ProcessEntity[0]);
@@ -241,8 +236,7 @@ public class PACExtractorServiceTest {
         NewerEventEntity newerEventEntity = new NewerEventEntity();
         newerEventEntity.setHasNewerEvent(hasNewerEvent);
 
-        ResponseEntity<NewerEventEntity> responseEntity =
-                new ResponseEntity<>(newerEventEntity, HttpStatus.OK);
+        new ResponseEntity<>(newerEventEntity, HttpStatus.OK);
 
         when(mockRestTemplateCMS.getForObject(any(URI.class), eq(NewerEventEntity.class)))
                 .thenReturn(newerEventEntity);
