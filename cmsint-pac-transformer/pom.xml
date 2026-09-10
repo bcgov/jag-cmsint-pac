@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>jag-cmsint-pac</artifactId>
 		<groupId>ca.bc.gov.open</groupId>
-		<version>2.0.3-SNAPSHOT</version>
+		<version>2.0.3</version>
 	</parent>
 
 	<properties>
@@ -16,14 +16,14 @@
 	</properties>
 
 	<artifactId>cmsint-pac-transformer</artifactId>
-	<version>2.0.3-SNAPSHOT</version>
+	<version>2.0.3</version>
 	<name>cmsint-pac-transformer</name>
 	<description>cmsint-pac-transformer</description>
 	<dependencies>
 		<dependency>
 			<groupId>ca.bc.gov.open</groupId>
 			<artifactId>cmsint-pac-common-models</artifactId>
-			<version>2.0.3-SNAPSHOT</version>
+			<version>2.0.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
