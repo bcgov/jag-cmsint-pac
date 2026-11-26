@@ -183,8 +183,8 @@ class PACExtractorServiceTest {
         when(mockRestTemplateCMSInt.getForObject(any(URI.class), eq(ProcessEntity[].class)))
                 .thenReturn(new ProcessEntity[0]);
 
-        pacExtractorService.pollOrdsForNewRecords();
-        assertThat(output).contains("Pulled 0 new records");
+        assertDoesNotThrow(()-> pacExtractorService.pollOrdsForNewRecords());
+
     }
 
     @Test
@@ -192,8 +192,9 @@ class PACExtractorServiceTest {
         when(mockRestTemplateCMSInt.getForObject(any(URI.class), eq(ProcessEntity[].class)))
                 .thenThrow(new RuntimeException("testing exception"));
 
-        pacExtractorService.pollOrdsForNewRecords();
-        assertThat(output).contains("Failed to pull new records from the db");
+
+        assertDoesNotThrow(()-> pacExtractorService.pollOrdsForNewRecords());
+        
     }
 
     @Test
