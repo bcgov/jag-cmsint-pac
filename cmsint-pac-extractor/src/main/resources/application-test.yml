@@ -18,9 +18,7 @@ spring:
     password: ${RABBIT_MQ_HOST}
 
 server:
-  port: ${
-
-  _SERVER_PORT:8080}
+  port: ${SERVER_PORT:8080}
 
 management:
   server:
