@@ -194,7 +194,7 @@ class PACExtractorServiceTest {
 
 
         assertDoesNotThrow(()-> pacExtractorService.pollOrdsForNewRecords());
-        
+
     }
 
     @Test
