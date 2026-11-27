@@ -78,6 +78,12 @@
             <artifactId>javassist</artifactId>
             <version>3.25.0-GA</version>
         </dependency>
+        <!-- Splunk logging -->
+        <dependency>
+            <groupId>com.splunk.logging</groupId>
+            <artifactId>splunk-library-javalogging</artifactId>
+            <version>1.11.7</version>
+        </dependency>
         <!-- Logging framework -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
