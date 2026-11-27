@@ -1,4 +1,4 @@
-name: Action for TEST Deployment
+name: Action for PROD Deployment
 permissions:
   contents: write
 
